@@ -1,4 +1,3 @@
-
 #include <boost/asio.hpp>
 #include <string>
 #include <memory>
@@ -43,15 +42,7 @@ public:
             ssOut << std::endl;
             ssOut << sHTML;
         }
-        else if(url == "/loaderio-cd7eafd004b92fe9a9f469bd78352679/")
-        {
-            std::string sHTML = "loaderio-cd7eafd004b92fe9a9f469bd78352679";
-            ssOut << "HTTP/1.1 200 OK" << std::endl;
-            ssOut << "content-type: text/html" << std::endl;
-            ssOut << "content-length: " << sHTML.length() << std::endl;
-            ssOut << std::endl;
-            ssOut << sHTML;
-        }
+
         else
         {
             std::string sHTML = "<html><body><h1>404 Not Found</h1><p>There's nothing here.</p></body></html>";
@@ -79,7 +70,7 @@ public:
 
     void on_read_header(std::string line)
     {
-        //std::cout << "header: " << line << std::endl;
+        std::cout << "header: " << line << std::endl;
 
         std::stringstream ssHeader(line);
         std::string headerName;
@@ -120,13 +111,16 @@ class session
         asio::async_read_until(pThis->socket, pThis->buff, '\r', [pThis](const error_code& e, std::size_t s)
         {
             std::string line, ignore;
+
             std::istream stream {&pThis->buff};
             std::getline(stream, line, '\r');
             std::getline(stream, ignore, '\n');
+
             pThis->headers.on_read_header(line);
 
             if(line.length() == 0)
             {
+                // GET
                 if(pThis->headers.content_length() == 0)
                 {
                     std::shared_ptr<std::string> str = std::make_shared<std::string>(pThis->headers.get_response());
@@ -135,6 +129,7 @@ class session
                         std::cout << "done" << std::endl;
                     });
                 }
+                // POST
                 else
                 {
                     pThis->read_body(pThis);
@@ -152,9 +147,14 @@ class session
         asio::async_read_until(pThis->socket, pThis->buff, '\r', [pThis](const error_code& e, std::size_t s)
         {
             std::string line, ignore;
+
             std::istream stream {&pThis->buff};
+
+            // if on Windows
             std::getline(stream, line, '\r');
+
             std::getline(stream, ignore, '\n');
+
             pThis->headers.on_read_request_line(line);
             pThis->read_next_line(pThis);
         });
