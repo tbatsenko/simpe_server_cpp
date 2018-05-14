@@ -2,11 +2,14 @@
 #include <string>
 #include <memory>
 #include <iostream>
+#include "boost/filesystem.hpp"
+#include "detector.hpp"
 
 using namespace boost;
 using namespace boost::system;
 using namespace boost::asio;
-
+using namespace drodil::file::mime;
+namespace fs = boost::filesystem;
 using std::cout;
 
 class session;
@@ -23,35 +26,31 @@ public:
     std::string get_response()
     {
         std::stringstream ssOut;
-        if(url == "/favicon.ico")
-        {
-            int nSize = 0;
+        Detector detector;
+
+        // return index.html on root path
+        if (url == "/") { url = "/index.html"; }
+        fs::path sourceFile("../public" + url);
+
+        if (fs::exists(sourceFile)) {
+            std::ifstream t(sourceFile.string());
+            std::string sResponseBody((std::istreambuf_iterator<char>(t)),
+                            std::istreambuf_iterator<char>());
 
             ssOut << "HTTP/1.1 200 OK" << std::endl;
-            ssOut << "content-type: image/vnd.microsoft.icon" << std::endl;
-            ssOut << "content-length: " << nSize << std::endl;
+            ssOut << "content-type: " + detector.detect(sourceFile.string()) << std::endl;
+            ssOut << "content-length: " << sResponseBody.length() << std::endl;
             ssOut << std::endl;
-
-        }
-        else if(url == "/")
-        {
-            std::string sHTML = "<html><body><h1>Hello World</h1><p>This is a test web server in c++</p></body></html>";
-            ssOut << "HTTP/1.1 200 OK" << std::endl;
-            ssOut << "content-type: text/html" << std::endl;
-            ssOut << "content-length: " << sHTML.length() << std::endl;
-            ssOut << std::endl;
-            ssOut << sHTML;
-        }
-
-        else
-        {
-            std::string sHTML = "<html><body><h1>404 Not Found</h1><p>There's nothing here.</p></body></html>";
+            ssOut << sResponseBody;
+        } else {
+            std::string sResponseBody = "<html><body><h1>404 Not Found</h1><p>There's nothing here.</p></body></html>";
             ssOut << "HTTP/1.1 404 Not Found" << std::endl;
             ssOut << "content-type: text/html" << std::endl;
-            ssOut << "content-length: " << sHTML.length() << std::endl;
+            ssOut << "content-length: " << sResponseBody.length() << std::endl;
             ssOut << std::endl;
-            ssOut << sHTML;
+            ssOut << sResponseBody;
         }
+
         return ssOut.str();
     }
 
