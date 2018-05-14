@@ -10,7 +10,6 @@ using namespace boost::system;
 using namespace boost::asio;
 using namespace drodil::file::mime;
 namespace fs = boost::filesystem;
-using std::cout;
 
 class session;
 
@@ -69,8 +68,6 @@ public:
 
     void on_read_header(std::string line)
     {
-        std::cout << "header: " << line << std::endl;
-
         std::stringstream ssHeader(line);
         std::string headerName;
         std::getline(ssHeader, headerName, ':');
@@ -86,8 +83,6 @@ public:
         ssRequestLine >> method;
         ssRequestLine >> url;
         ssRequestLine >> version;
-
-        std::cout << "request for resource: " << url << std::endl;
     }
 };
 
@@ -123,10 +118,7 @@ class session
                 if(pThis->headers.content_length() == 0)
                 {
                     std::shared_ptr<std::string> str = std::make_shared<std::string>(pThis->headers.get_response());
-                    asio::async_write(pThis->socket, boost::asio::buffer(str->c_str(), str->length()), [pThis, str](const error_code& e, std::size_t s)
-                    {
-                        std::cout << "done" << std::endl;
-                    });
+                    asio::async_write(pThis->socket, boost::asio::buffer(str->c_str(), str->length()), [pThis, str](const error_code& e, std::size_t s){});
                 }
                 // POST
                 else
