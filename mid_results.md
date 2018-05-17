@@ -1408,9 +1408,9 @@ Percentage of the requests served within a certain time (ms)
   99%    162
  100%    170 (longest request)
 ```
-##Macbook Air 2014, 4gb RAM
-###4 threads (main + 3) 
-####Requests per second:    5826.35 [#/sec] (mean)
+###Macbook Air 2014, 4gb RAM
+####4 threads (main + 3) 
+#####Requests per second:  5826.35 (mean)
 
 ```
 This is ApacheBench, Version 2.3 <$Revision: 1807734 $>
