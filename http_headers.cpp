@@ -1,8 +1,3 @@
-//
-// Created by Tanya Batsenko on 5/15/18.
-//
-
-
 #include "http_headers.h"
 #include <boost/asio.hpp>
 #include <string>
