@@ -42,6 +42,27 @@ void accept_and_run(ip::tcp::acceptor& acceptor, io_service& io_service)
 int main(int argc, const char * argv[])
 {
 
+    io_service ioservice;
+
+    int NUM_THREADS = 3;
+
+    boost::asio::io_service::work some_work(ioservice);
+
+    const ip::tcp::endpoint endpoint{ip::tcp::v4(), 3000};
+    ip::tcp::acceptor acceptor{ioservice, endpoint};
+
+    acceptor.listen();
+
+    boost::thread_group threads;
+    for (int i = 0; i < NUM_THREADS; ++i) {
+        threads.create_thread(boost::bind(&io_service::run, &ioservice));
+    }
+
+    accept_and_run(acceptor, ioservice);
+
+    ioservice.run();
+
+    threads.join_all();
+
     return 0;
 }
-
