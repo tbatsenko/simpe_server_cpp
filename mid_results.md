@@ -1408,3 +1408,63 @@ Percentage of the requests served within a certain time (ms)
   99%    162
  100%    170 (longest request)
 ```
+##Macbook Air 2014, 4gb RAM
+###4 threads (main + 3) 
+####Requests per second:    5826.35 [#/sec] (mean)
+
+```
+This is ApacheBench, Version 2.3 <$Revision: 1807734 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient)
+Completed 500 requests
+Completed 1000 requests
+Completed 1500 requests
+Completed 2000 requests
+Completed 2500 requests
+Completed 3000 requests
+Completed 3500 requests
+Completed 4000 requests
+Completed 4500 requests
+Completed 5000 requests
+Finished 5000 requests
+
+
+Server Software:        
+Server Hostname:        127.0.0.1
+Server Port:            3000
+
+Document Path:          /
+Document Length:        503 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.858 seconds
+Complete requests:      5000
+Failed requests:        0
+Keep-Alive requests:    0
+Total transferred:      2820000 bytes
+HTML transferred:       2515000 bytes
+Requests per second:    5826.35 [#/sec] (mean)
+Time per request:       17.163 [ms] (mean)
+Time per request:       0.172 [ms] (mean, across all concurrent requests)
+Transfer rate:          3209.05 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    5   2.7      5      14
+Processing:     3   11   3.1     11      24
+Waiting:        2    9   3.1      9      22
+Total:          9   17   3.1     16      28
+
+Percentage of the requests served within a certain time (ms)
+  50%     16
+  66%     18
+  75%     19
+  80%     20
+  90%     22
+  95%     22
+  98%     24
+  99%     24
+ 100%     28 (longest request)
+```
