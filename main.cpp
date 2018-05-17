@@ -1,4 +1,6 @@
 #include <boost/asio.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 #include <string>
 #include <memory>
 #include <iostream>
@@ -45,25 +47,51 @@ int main(int argc, const char * argv[])
 {
     io_service ioservice;
 
-    ip::tcp::endpoint endpoint{ip::tcp::v4(), 3000};
+    int NUM_THREADS = 2;
+
+    boost::asio::io_service::work some_work(ioservice);
+
+
+    const ip::tcp::endpoint endpoint{ip::tcp::v4(), 3000};
     ip::tcp::acceptor acceptor{ioservice, endpoint};
+
+//    acceptor_.bind({ ip::tcp::v4(), 6767 });
+
+//    acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+//    acceptor.bind(endpoint);
 
     acceptor.listen();
 
+
+
+
+    boost::thread_group threads;
+    for (int i = 0; i < NUM_THREADS; ++i) {
+        threads.create_thread(boost::bind(&io_service::run, &some_work.get_io_service()));
+    }
+
     accept_and_run(acceptor, ioservice);
 
+    ioservice.run();
 
-    const int THREADS_AMOUNT = 2;
-    std::vector<std::thread> threads;
+    threads.join_all();
 
-    for (int i = 0; i < THREADS_AMOUNT; ++i) {
 
-        threads.emplace_back([&ioservice](){ ioservice.run(); });
-    }
 
-    for (int i = 0; i < THREADS_AMOUNT; ++i) {
-        threads[i].join();
-    }
+
+
+//
+//    const int THREADS_AMOUNT = 2;
+//    std::vector<std::thread> threads;
+//
+//    for (int i = 0; i < THREADS_AMOUNT; ++i) {
+//
+//        threads.emplace_back([&ioservice](){ ioservice.run(); });
+//    }
+//
+//    for (int i = 0; i < THREADS_AMOUNT; ++i) {
+//        threads[i].join();
+//    }
 
 
 //    ioservice.run();
