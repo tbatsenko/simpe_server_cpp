@@ -1409,7 +1409,7 @@ Percentage of the requests served within a certain time (ms)
  100%    170 (longest request)
 ```
 
-### Macbook Air 2014, 4gb RAM
+### Macbook Air 2014, 1.4 GHz Intel Core i5
 #### 4 threads (main + 3) 
 ##### Requests per second:  5826.35 (mean)
 
