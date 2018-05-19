@@ -8,7 +8,6 @@
 #include "boost/filesystem.hpp"
 #include "detector.hpp"
 
-
 using namespace boost;
 using namespace boost::system;
 using namespace boost::asio;

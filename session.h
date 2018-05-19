@@ -23,15 +23,6 @@ class session
     asio::streambuf buff;
     http_headers headers;
 
-    static void read_body(std::shared_ptr<session> pThis) {
-        int nbuffer = 1000;
-        std::shared_ptr<std::vector<char>> bufptr = std::make_shared<std::vector<char>>(nbuffer);
-        asio::async_read(pThis->socket, boost::asio::buffer(*bufptr, nbuffer), [pThis](const error_code& e, std::size_t s)
-                         {
-                         }
-        );
-    }
-
     static void read_next_line(std::shared_ptr<session> pThis)
     {
         asio::async_read_until(pThis->socket, pThis->buff, '\r', [pThis](const error_code& e, std::size_t s)
@@ -46,16 +37,11 @@ class session
 
             if(line.length() == 0)
             {
-                // GET
+                // Handling GET request
                 if(pThis->headers.content_length() == 0)
                 {
                     std::shared_ptr<std::string> str = std::make_shared<std::string>(pThis->headers.get_response());
                     asio::async_write(pThis->socket, boost::asio::buffer(str->c_str(), str->length()), [pThis, str](const error_code& e, std::size_t s){});
-                }
-                    // POST
-                else
-                {
-                    pThis->read_body(pThis);
                 }
             }
             else

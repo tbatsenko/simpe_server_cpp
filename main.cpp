@@ -8,13 +8,9 @@
 #include <thread>
 #include <vector>
 
-
-
 #include "detector.hpp"
 #include "http_headers.h"
 #include "session.h"
-#include "client.h"
-
 
 using namespace boost;
 using namespace boost::system;
@@ -24,14 +20,15 @@ namespace fs = boost::filesystem;
 
 class session;
 
-
 void accept_and_run(ip::tcp::acceptor& acceptor, io_service& io_service)
 {
     std::shared_ptr<session> sesh = std::make_shared<session>(io_service);
 
     acceptor.async_accept(sesh->socket, [sesh, &acceptor, &io_service](const error_code& accept_error)
     {
+        // Call to contiue listening
         accept_and_run(acceptor, io_service);
+
         if(!accept_error)
         {
             session::interact(sesh);
@@ -41,11 +38,12 @@ void accept_and_run(ip::tcp::acceptor& acceptor, io_service& io_service)
 
 int main(int argc, const char * argv[])
 {
-
     io_service ioservice;
 
     int NUM_THREADS = 3;
 
+    // Use boost::asio::io_service::work so that we
+            // are able to call "run" multiple times without returning
     boost::asio::io_service::work some_work(ioservice);
 
     const ip::tcp::endpoint endpoint{ip::tcp::v4(), 3000};

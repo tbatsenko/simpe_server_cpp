@@ -411,4 +411,4 @@ private:
 } // namespace file
 } // namespace drodil
 
-#endif FILE_MIME_DETECTOR_HPP_
+#endif

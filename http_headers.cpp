@@ -6,13 +6,11 @@
 #include "boost/filesystem.hpp"
 #include "detector.hpp"
 
-
 using namespace boost;
 using namespace boost::system;
 using namespace boost::asio;
 using namespace drodil::file::mime;
 namespace fs = boost::filesystem;
-
 
 std::string http_headers::get_response()
 {
